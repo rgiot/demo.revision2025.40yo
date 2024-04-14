@@ -77,11 +77,17 @@ data
 		dw part{{part_nb}}_destination			; destination of the part
 	endr
 	dw 0
+
+
+	print "====== MUSIC ======"
  
 	include "music/Lookool_playerconfig.asm"
 music_player
 	include "music/Lookool.asm"
 music
 	include "music/PlayerAkm_basm.asm"
+music_end
+
+	print "Music from ", {hex4}music_player, " to ", {hex4}(music_end-1)
 
 	print "Demosystem stops at ", {hex4}$
