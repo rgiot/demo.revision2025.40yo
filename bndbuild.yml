@@ -1,0 +1,26 @@
+- tgt: sna
+  dep: test.sna
+
+- tgt: m4
+  dep: sna
+  cmd: xfer 192.168.1.27 -y hello.sna
+
+- tgt: test.sna page0.o page1.o
+  dep: test.asm demosystem/demosystem.asm demosystem/jumpblocs.asm part1/part1.o
+  cmd: basm test.asm --sna -o test.sna --lst test.lst --sym test.sym
+
+
+- tgt: crunchtest
+  dep: demosystem/crunchtest.asm part1/part1.o
+  cmd: basm demosystem/crunchtest.asm
+
+
+
+- tgt: clean
+  phony: true
+  cmd: -rm *.o *.lst *.sym
+
+- tgt: distclean
+  phony: true
+  dep: clean
+  cmd: -rm test.sna
