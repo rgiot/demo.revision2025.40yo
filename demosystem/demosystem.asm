@@ -17,7 +17,7 @@
 
 	assert SELECTED_PAGE == 1
 
-
+	include once "demosystem/config.asm"
 	include once "contract/part1.asm"
 
 
@@ -76,9 +76,23 @@ demo_system_private_launch_next_part
 ;;
 ; Probably bet to do it after cutting the interruptions
 demo_system_private_init_player
-	ld hl, PLY_AKM_Play : ld (rst1.music_routine), hl
-	ld hl, music : xor a
-	jp PLY_AKM_Init
+	switch SELECTED_MUSIC_PLAYER
+	case MUSIC_PLAYER_AKM
+		; XXX Do not play song properly for an unknown reason
+		; XXX BUT do not care now as this player will not be used
+		ld hl, PLY_AKM_Play : ld (rst1.music_routine), hl
+		ld hl, music : xor a
+		jp PLY_AKM_Init
+		break
+	case MUSIC_PLAYER_CHP
+		; XXX properly works with warhawack now
+		; XXX but not at all with square roots music
+		; TODO remove this uneeded indirection
+		jp chip_play
+		break
+	default
+		fail "Player unhandled: ", SELECTED_MUSIC_PLAYER
+	endswitch
 
 
 ;;
@@ -134,13 +148,48 @@ data
 
 	print "====== MUSIC ======"
  
-	include "music/Lookool_playerconfig.asm"
-music_player
-	include "music/Lookool.asm"
-music
-	include "music/PlayerAkm_basm.asm"
-music_end
 
-	print "Music from ", {hex4}music_player, " to ", {hex4}(music_end-1)
+	switch SELECTED_MUSIC_PLAYER
+		case MUSIC_PLAYER_AKM
+
+				include "music/Lookool_playerconfig.asm"
+			music_player
+				include "music/Lookool.asm"
+			music
+				include "music/PlayerAkm_basm.asm"
+			music_end
+
+				print "Music from ", {hex4}music_player, " to ", {hex4}(music_end-1)
+				break
+
+		case MUSIC_PLAYER_CHP
+			writepsg ; A=BYTE,C=REG.; -
+				push bc
+				ld b,$F4
+				out (c),c
+				ld bc,$F6C0;SELECT
+				out (c),c
+				dw $71ED;CPC PLUS!
+				ld b,$F4
+				out (c),a
+				ld bc,$F680;UPDATE
+				out (c),c
+				dw $71ED;CPC PLUS!
+				pop bc
+				ret
+
+			CHIPNSFX_FLAG = 0 + 4 + 256
+			chipnsfx
+				include "music/chipnsfx.z80"
+			music
+				include "music/WARHAWK.asm"
+			chip_song_a = song_a
+			chip_song_b = song_b
+			chip_song_c = song_c
+				break
+			
+		default 
+			fail "player unhandled"
+	endswitch
 
 	print "Demosystem stops at ", {hex4}$
