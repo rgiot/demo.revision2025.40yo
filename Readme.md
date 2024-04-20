@@ -12,7 +12,7 @@
  - Each participant provides the sources and binaries of its part. Any assembler/tool can be used, but if Krusty is unable to build the part, you'll have to rebuild it several times during the integration process to fix various issues.
  - For the sake of memory efficiency, there is no CRTC detection routine. So each part that needs CRTC adaptation have to be assembled for all crtc. Each version must shrinks <= 512 bytes. There will be one executable per CRTC
  - each part must work on CRTC 0/1/4. This is good if it works on crtc 3 and marvelous on crtc 2. The best is to be able to play the demo on any machine with 128kb
-
+ - If you play with 0x38... area, backup and restore it
 
 
 # Workflow 

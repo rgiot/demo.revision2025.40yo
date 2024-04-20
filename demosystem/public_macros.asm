@@ -10,9 +10,9 @@ demo_system_selected_bank equ 0x18 ; XXX manually setup the right value as soon 
 
 	;;
 	; Launch a slow command in the demo system
-	; Modified: everything
+	; Modified: possibly everything
 	macro DS_LAUNCH_COMMAND cmd
-		ld a, {cmd}
+		ld e, {cmd}*2
 		rst 4
 	endm
 
@@ -58,14 +58,16 @@ demo_system_selected_bank equ 0x18 ; XXX manually setup the right value as soon 
 	;;
 	; Specify a selected bank to come back after playing the music
 	; Input: A the bank of interest
-	; Modified B
+	; Modified: B
 	macro DS_SELECT_BANK_FROM_A
 		print  "Be sure DS_SELECT_BANK_FROM_A is executed with current bank IS NOT C4"
-		ld b, 0x7f : out (c), a
 		ld (demo_system_selected_bank), a ; TODO hardcode the address for the others
+		ld b, 0x7f : out (c), a
 	endm
 
 
+	;;
+	; Modifed: A, B
 	macro DS_SELECT_BANK bank
 		ld a, {bank}
 		DS_SELECT_BANK_FROM_A (void)

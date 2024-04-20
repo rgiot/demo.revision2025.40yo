@@ -48,17 +48,70 @@ part{PARTS_COUNT}_binary_length = part{PARTS_COUNT}_after_binary - part{PARTS_CO
 	org 0xc000
 
 ;;
-; RST 4 has been used to send a command in a register
+; RST 4 has been used to send a command (whose value is multiplied by two) in register E
 demo_system_handle_command
-	print "Need to code that"
+	ld d, 0 ; Now de contains the position within the command table
+	ld hl, .command_table
+	add hl, de
+	ld e, (hl)
+	if .command_table % 2 == 0
+		inc l
+	else
+		print "demo_system_handle_command.command_table could be better aligned to use inc l instead of inc hl "
+		inc hl
+	endif
+	ld d, (hl)
+	ex de, hl
+	jp hl ; Yeah, it is not not jp (hl) :()
+.command_table
+	dw demo_system_private_start_music_under_interruption ; DS_COMMAND_INSTALL_INTERRUPTED_MUSIC
+	dw demo_system_private_stop_music_under_interruption ; DS_COMMAND_STOP_INTERRUPTED_MUSIC
+	dw demo_system_private_launch_next_part ; DS_COMMAND_LAUNCH_NEXT_PART
 
 	; prequisit stack is properly handled TODO
-demo_system_launch_next_part
+demo_system_private_launch_next_part
+	call 0xdead
 
 
-demo_system_start_music_under_interruption
+;;
+; Probably bet to do it after cutting the interruptions
+demo_system_private_init_player
+	ld hl, PLY_AKM_Play : ld (rst1.music_routine), hl
+	ld hl, music : xor a
+	jp PLY_AKM_Init
 
-demo_system_stop_music_under_interruption
+
+;;
+; The music was played manually.
+; Now the user expects to automatically play it under interruption.
+demo_system_private_start_music_under_interruption
+	; Wait next vsync and play the music
+	DS_WAIT_VSYNC (void)
+	di
+	DS_PLAY_MUSIC (void)
+	ei : nop
+	repeat 5
+		halt
+	endr
+	
+	; Install the proper handler for interrupted code
+	; Assume demosystem_interrupted_code.TABINT has never been altered
+    xor a : ld (demosystem_interrupted_code.COUNTI), a
+	ld hl, demosystem_interrupted_code
+	ld (demosystem_interruption_handling.jump_address), hl
+    ret
+
+;;
+; The music was played under interruption.
+; Now the user expects to manually play it
+demo_system_private_stop_music_under_interruption
+	ld hl, demosystem_interrupted_code.leave_interrupted_code
+	ld (demosystem_interruption_handling.jump_address), hl
+	ret
+
+
+
+
 
 data
 

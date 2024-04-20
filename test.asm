@@ -19,31 +19,8 @@ SELECTED_PAGE = 0
 
 page0_start
 
-	; TODO do the init related to the firmware code called by each part
-	; Find a way to do it using few memory space (jumpblocs are not yet installed at that moment)
+	include "demosystem/demosystem_init.asm"
 
-
-	; install the stack in 0x100 space and the jump blocs
-	di
-		BREAKPOINT
-
-		ld sp, 0x100
-		ld hl, jumpbloc_data
-		ld de, 0x0000
-		ld bc, jumploc_data_length
-		ldir
-	ei
-
-	; TODO do the init that is not related to the firwmare code
-
-	; TODO install the music under interruption
-
-	; TODO launch the first part. That will itself launch the next one and so on
-	jp $
-
-jumpbloc_data
-	include "demosystem/jumpblocs.asm"
-jumploc_data_length = $-jumpbloc_data
 
 
 page0_length = $ - page0_start

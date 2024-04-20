@@ -3,17 +3,16 @@
 
 first_byte
 
-shrinked_page0_start
+crunched_data
 	LZSHRINKLER
+page0_start
 		incbin "page0.o"
-	LZCLOSE
-shrinked_page0_length equ $-shrinked_page0_start
-
-shrinked_page1_start
-	LZSHRINKLER
+page0_length equ $-page0_start
+page1_start
 		incbin "page1.o"
+page1_length equ $-page1_start
 	LZCLOSE
-shrinked_page1_length equ $-shrinked_page1_start
+crunched_data_length equ $-crunched_data
 
 	include "demosystem/deshrink.asm"
 
