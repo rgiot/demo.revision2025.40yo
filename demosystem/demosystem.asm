@@ -232,7 +232,7 @@ data
 			chipnsfx
 				include "music/chipnsfx.z80"
 			music
-				include "music/WARHAWK.asm"
+				include "music/4k08_final_tj.asm"
 			chip_song_a = song_a
 			chip_song_b = song_b
 			chip_song_c = song_c
