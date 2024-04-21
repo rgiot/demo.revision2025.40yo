@@ -148,6 +148,8 @@ demosystem_interrupted_code
         POP AF
 .leave_interrupted_code
         EI
+
+		assert demo_system_address_of_a_ret == $, "Need to update public_macros.asm"
         RET
 
 ;;

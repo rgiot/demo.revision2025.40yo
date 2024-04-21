@@ -6,7 +6,9 @@ DS_COMMAND_STOP_INTERRUPTED_MUSIC equ 1
 DS_COMMAND_LAUNCH_NEXT_PART equ 2
 
 ; TODO automatize the update of this vklue
-demo_system_selected_bank equ 0x18 ; XXX manually setup the right value as soon as it changes
+demo_system_selected_bank equ 0x18 	; XXX manually setup the right value as soon as it changes
+demo_system_address_of_a_ret equ 0x6a 	; XXX manually setup the right value as soon as it changes
+
 
 	;;
 	; Launch a slow command in the demo system
@@ -43,8 +45,13 @@ demo_system_selected_bank equ 0x18 ; XXX manually setup the right value as soon 
 		DS_LAUNCH_COMMAND DS_COMMAND_STOP_INTERRUPTED_MUSIC
 	endm
 
+	;;
+	; Give the control to the demo system to launch the next part
+	; Here we do not do rst 4 but jump.
+	; The demosystem will put the part address on the stack
 	macro DS_LAUNCH_NEXT_PART
-		DS_LAUNCH_COMMAND DS_COMMAND_LAUNCH_NEXT_PART
+		ld e, 2*DS_COMMAND_LAUNCH_NEXT_PART
+		jp 0x0020 ; demosystem_send_command
 	endm
 
 	;;

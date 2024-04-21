@@ -1,5 +1,6 @@
 ;;
-; Example of part that uses the informtion for the demo system
+; Example of simple part that relies on the demo system and it s automatic music play
+; No init are used for this part
 ;
 ; Of course parts can be written with any assembler as soon as the API contracts are respected.
 ; I'm pretty sure my files are rasm compatible
@@ -8,72 +9,44 @@
 	include "contract/part1.asm"
 	include "demosystem/public_macros.asm"
 
-FOREVER_VARIABLE_SPACE equ PART1_AVAILABLE_MEMORY_SPACE_SIZE
-VARIABLE1_RELATIVE_POSITION equ 0 ; 
+	org PART1_LOADING_AREA
 
 ;;
 ; Each part must start with these 3 jump blocks
+; So systematically 6 bytes that compress badly are lost
 part1
-	jp init_assets_with_firmware ; System has not been killed yet, it is then possible to use it to build/compute stuff
+	dw demo_system_address_of_a_ret ; System has not been killed yet, it is then possible to use it to build/compute stuff
 	               				 ; this is called one time just after deo launched
-	jp init_assets_without_firmware ; Some other init may prfere a killed system.
+	dw demo_system_address_of_a_ret ; Some other init may prfere a killed system.
 	                                ; it is better to lost 3 bytes rather than plenty more by saving firmware state
-	jp play_part ;
+	dw play_part ;
 
 ;;
-; the part uses the firmware for some init stuff
+; No init are done there
+; We can still earn 1 byte by setting the adress at a location where we know there is a ret
 init_assets_with_firmware
-	; some fake data storage to test memory access
-	ld bc, 0x7f00 + PART1_DATA_BANK : out (c), c
-
-	ld hl, 0xbeef
-	ld (FOREVER_VARIABLE_SPACE + VARIABLE1_RELATIVE_POSITION + 0), hl
-
-	ld bc, 0x7f00 + 0xc0 : 	out (c), c
-
-	ld hl, .msg
-.loop
-	ld a, (hl) : or a : ret z
-	inc hl
-	call 0xbb5a
-	jr .loop
-.msg db "Part 1 uses system there", 0
-
-;;
-; This init is done when firmware is not used
 init_assets_without_firmware
-	assert $<0x4000
-
-	; Some fake data storage to replace the previous one
-	ld bc, 0x7f00 + PART1_DATA_BANK : out (c), c
-	ld hl, 0xbeef
-	ld (FOREVER_VARIABLE_SPACE + VARIABLE1_RELATIVE_POSITION + 0), hl
-	ld bc, 0x7f00 + 0xc0 : out (c), c
-
-	assert $<0x4000
 	ret
 
 play_part
-.init
-	; play with the data stored
-	DS_SELECT_BANK PART1_DATA_BANK
-	ld hl, (FOREVER_VARIABLE_SPACE + VARIABLE1_RELATIVE_POSITION + 0)
-	inc (hl)
+	; todo register a gunction to leave properly
 
-	ld hl, (FOREVER_VARIABLE_SPACE + VARIABLE1_RELATIVE_POSITION + 0)
-	dec (hl)
-
-	DS_SELECT_BANK 0xc0
-	DS_STOP_INTERRUPTED_MUSIC (void)
-
-
+	; just a garbage effect to verify we loop and play the music
+	ld hl, 0xc000
 .frame_loop
-	DS_WAIT_VSYNC (void)
-	DS_PLAY_MUSIC (void)
+	ld a, r
+	ld (hl), a
+	inc l
 
 
 	jp .frame_loop
 
 .leave
-	DS_INSTALL_INTERRUPTED_MUSIC (void)
+	; cleanup the mess
+	ld hl, 0xc000
+	ld de, 0xc000 + 1
+	ld bc, 256
+	ld (hl), l
+	ldir
+
 	DS_LAUNCH_NEXT_PART (void)

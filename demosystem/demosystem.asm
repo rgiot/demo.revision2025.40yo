@@ -69,10 +69,47 @@ demo_system_handle_command
 	dw demo_system_private_launch_next_part ; DS_COMMAND_LAUNCH_NEXT_PART
 
 	; prequisit stack is properly handled TODO
+	; WARNING this is not compatible with the firmware
+	; TODO use this very same code for the 3 steps
+	; - init with firmware (interruptions are cut, ix/iy saved)
+	; - init after firmware (interruption are cut, we don't care of ix/iy)
+	; - demo play (the current version)
 demo_system_private_launch_next_part
-	call 0xdead
+	ld ix, data.table
+.table_pointer equ $-2
+.read_values
+	ld l, (ix + 0)
+	ld h, (ix + 1)
+	ld a, h : or l
+	jr nz, .go_on
+	ld ix, data.table
+	jr .read_values
+.go_on
+	
+	ld e, (ix + 4)
+	ld d, (ix + 5)
+
+	push de
 
 
+	ld c, (ix + 2)
+	ld b, (ix + 3)
+
+	; HL = Address of the part in C1 memory space
+	; BC = Number of bytes to copy
+	; DE = Address of the part in 0x100-0xbfff
+	ldir
+
+	; compute the address of the demo
+	pop hl
+	inc hl : inc hl : inc hl : inc hl ; move at the appropriate location
+	ld e, (hl) : inc hl : ld d, (hl)
+
+	; setup properly the stack to finish the execution of the DS routines and call the demo
+	pop bc 		; remove the return of call demo_system_handle_command
+	push de    	; store the demo address
+	push bc 	; restore the return of the call
+	ret ; continue the execution; the appropriate demo will be launched
 ;;
 ; Probably bet to do it after cutting the interruptions
 demo_system_private_init_player
@@ -133,8 +170,8 @@ data
 .parts
 	print "====== PARTS ======"
 
-	ADD_PART "part1/part1.o", 0x4000
-	ADD_PART "part2/fake.bin", 0x2000
+	ADD_PART "part1/part1.o", PART1_LOADING_AREA
+;	ADD_PART "part2/fake.bin", 0x2000
 
 	; Automatically create the information to launch them
 .table

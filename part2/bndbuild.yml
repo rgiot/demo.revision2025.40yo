@@ -1,0 +1,3 @@
+- tgt: part2.o
+  dep: part2.asm ../contract/part2.asm ../demosystem/public_macros.asm
+  cmd: basm part2.asm -o part2.o -I ..
