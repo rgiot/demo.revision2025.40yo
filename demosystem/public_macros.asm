@@ -6,9 +6,14 @@ DS_COMMAND_STOP_INTERRUPTED_MUSIC equ 1
 DS_COMMAND_LAUNCH_NEXT_PART equ 2
 
 ; TODO automatize the update of this vklue
-demo_system_selected_bank equ 0x18 	; XXX manually setup the right value as soon as it changes
+demo_system_selected_bank equ 0x1b 	; XXX manually setup the right value as soon as it changes
 demo_system_address_of_a_ret equ 0x6a 	; XXX manually setup the right value as soon as it changes
+demo_system_part_must_leave equ 0x36 ; XXX manually setup the right value as soon as it changes
 
+	macro DS_CHECK_IF_MUST_LEAVE
+		ld a, (demo_system_part_must_leave)
+		or a
+	endm
 
 	;;
 	; Launch a slow command in the demo system

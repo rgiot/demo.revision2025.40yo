@@ -1,7 +1,7 @@
 ;; 
 ; The maximum number of frames allocated to a demo
 ; Duration and unit subject to change
-NB_FRAMES_BEFORE_LEAVING equ 50*20
+NB_FRAMES_BEFORE_LEAVING equ 50*5 ; 50*20
 
 
 ;;

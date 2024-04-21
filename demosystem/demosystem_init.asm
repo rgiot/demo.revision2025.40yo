@@ -24,7 +24,6 @@
 		DS_INSTALL_INTERRUPTED_MUSIC (void)
 	ei
 
-	BREAKPOINT
 	DS_LAUNCH_NEXT_PART (void) ; Jump to the demo loader
 
 

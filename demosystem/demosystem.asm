@@ -109,6 +109,19 @@ demo_system_private_launch_next_part
 	pop bc 		; remove the return of call demo_system_handle_command
 	push de    	; store the demo address
 	push bc 	; restore the return of the call
+
+	; set up the limit counter
+	ld hl, (rst1.frame_counter)
+	ld bc, NB_FRAMES_BEFORE_LEAVING
+	add hl, bc
+	ld (demo_system_check_if_must_leave.limit), hl
+	ld a, 1 : ld (demo_system_part_must_leave), a
+
+	; update the pointer
+	ld de, 2 + 2 + 2
+	add ix, de
+	ld (.table_pointer), ix
+
 	ret ; continue the execution; the appropriate demo will be launched
 ;;
 ; Probably bet to do it after cutting the interruptions

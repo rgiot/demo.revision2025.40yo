@@ -34,12 +34,16 @@ play_part
 	; just a garbage effect to verify we loop and play the music
 	ld hl, 0xc000
 .frame_loop
-	ld a, r
-	ld (hl), a
-	inc l
 
+	ld b, 50
+.code_loop
+		ld a, r
+		ld (hl), a
+		inc l
+	djnz .code_loop
 
-	jp .frame_loop
+	DS_CHECK_IF_MUST_LEAVE (void)
+	jp nz, .frame_loop
 
 .leave
 	; cleanup the mess
@@ -49,4 +53,16 @@ play_part
 	ld (hl), l
 	ldir
 
+
+	; lost lots of time to see the screen cleanup
+	ld b, 50*3
+.slow_down
+		push bc
+			DS_WAIT_VSYNC (void)
+			halt
+			halt
+		pop bc
+	djnz .slow_down
+
+	; music is already under interruption, so there is no need to activate it again
 	DS_LAUNCH_NEXT_PART (void)

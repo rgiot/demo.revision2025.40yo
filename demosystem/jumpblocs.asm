@@ -43,7 +43,7 @@ rst1
 	assert DS_FRAME_COUNTER_ADDRESS == .frame_counter
 	inc hl
 	ld (.frame_counter), hl
-	
+	call demo_system_check_if_must_leave
 	; select the appropriate bank
 	; we assume the user has properly used the system and we'll go back to the approrpriate memory conf after
 	__DS_SELECT_DS_MEMORY_CONF__ (void)
@@ -63,6 +63,7 @@ demo_system_selected_bank_true_value equ $-2
 
 	ret
 
+
 	print 0x20 - $, " free bytes after RST 1/2/3"
 
 	assert $ <= 0x0020
@@ -81,6 +82,10 @@ demosystem_send_command
 	__DS_BACKUP_MEMORY_CONF_SELECT_DS_MEMORY_CONF_AND_FIX_IT__ (void)
 	call demo_system_handle_command
 	jp restore_memory_conf
+
+; Flag set to 0 when a part needs to leave (part installataion reset it to 1)
+	assert demo_system_part_must_leave == $
+	db 0
 
 	print 0x38 - $, " free bytes after RST 4/5/6"
 
@@ -198,6 +203,22 @@ restore_memory_conf
 .backup_memory_configuration equ $-1
 	ld (demo_system_selected_bank_true_value),a 
 	__DS_RESTORE_USER_MEMORY_CONF__ (void)
+	ret
+
+;;
+; A part must leave when the allocated amount of time as span.
+; This code seems over-complex, but its is supposed to properly handle overflow issue of the counter
+demo_system_check_if_must_leave
+	BREAKPOINT
+	ld bc, (rst1.frame_counter)
+	ld hl, 0xdead
+.limit equ $-2
+	or a
+	sbc hl, bc
+	ld a, h
+	or l
+	ret nz
+	xor a : ld (demo_system_part_must_leave), a
 	ret
 
 
