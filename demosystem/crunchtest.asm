@@ -1,6 +1,8 @@
 ;max_available = 512
 
 
+	include "demosystem/config.asm"
+
 part1_start
 	INCSHRINKLER "part1/part1.o"
 part1_end equ $ -1
@@ -9,9 +11,7 @@ part1_size = part1_end - part1_start + 1
 
 music_start
 	LZSHRINKLER
-		include "music/Lookool_playerconfig.asm"
-		include "music/Lookool.asm"
-		include "music/PlayerAkm_basm.asm"
+			include "demosystem/music.asm"
 	LZCLOSE
 music_end equ $ -1
 music_size = music_end - music_start + 1
