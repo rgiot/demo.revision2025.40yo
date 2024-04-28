@@ -5,6 +5,8 @@
   dep: sna
   cmd: xfer 192.168.1.27 -y hello.sna
 
+- tgt: 40
+
 - tgt: test.sna page0.o page1.o
   dep: test.asm demosystem/*.asm music/*.* part1/part1.o
   cmd: basm test.asm --sna -o test.sna --lst test.lst --sym test.sym

@@ -27,7 +27,7 @@
 				pop bc
 				ret
 
-			CHIPNSFX_FLAG = 0 + 4 + 256
+			CHIPNSFX_FLAG = 0 + 4 + 256 + 512
 			chipnsfx
 				include "music/chipnsfx.z80"
 			music

@@ -10,6 +10,20 @@ demo_system_selected_bank equ 0x1b 	; XXX manually setup the right value as soon
 demo_system_address_of_a_ret equ 0x6a 	; XXX manually setup the right value as soon as it changes
 demo_system_part_must_leave equ 0x36 ; XXX manually setup the right value as soon as it changes
 
+demo_system_selected_crtc equ 0x37
+
+	;;
+	; We wil lbuild one version of the demo per CRTC.
+	; This allows to get ride of CRTC tests and multiple code.
+	; hoewever if a particpant wants to provide a single binary, this macro set the forced CRTC in register A
+	macro DS_GET_FORCED_CRTC
+		ld a, (demo_system_selected_crtc)
+	endm
+
+
+	;;
+	; Each part has to leave after a given amount of frames has pass.
+	; set Z if the participant must leave its part
 	macro DS_CHECK_IF_MUST_LEAVE
 		ld a, (demo_system_part_must_leave)
 		or a

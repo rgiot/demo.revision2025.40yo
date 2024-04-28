@@ -87,6 +87,10 @@ demosystem_send_command
 	assert demo_system_part_must_leave == $
 	db 0
 
+; Selected CRTC by the user
+	assert demo_system_selected_crtc == $
+	db FORCED_CRTC
+
 	print 0x38 - $, " free bytes after RST 4/5/6"
 
 	assert $ <= 0x0038
