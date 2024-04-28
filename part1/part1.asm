@@ -14,15 +14,17 @@
 ;;
 ; Each part must start with these 3 jump blocks
 ; So systematically 6 bytes that compress badly are lost
+; In case no init is used, set the address to demo_system_address_of_a_ret
 part1
 	dw init_assets_with_firmware  ; System has not been killed yet, it is then possible to use it to build/compute stuff
 	               				 ; this is called one time just after deo launched
-	dw demo_system_address_of_a_ret ; Some other init may prfere a killed system.
+	dw init_assets_without_firmware ; Some other init may prfere a killed system.
 	                                ; it is better to lost 3 bytes rather than plenty more by saving firmware state
 	dw play_part ;
 
 ;;
 ; First stage init.
+; Print a string using the firmware
 init_assets_with_firmware
 	ld hl, .txt
 .loop
@@ -32,7 +34,21 @@ init_assets_with_firmware
 		jr .loop
 .txt db "Frimware init of part 1", 0
 
+;;
+; Second stage init.
+; Clear some bytes on screen
+init_assets_without_firmware
+	ld hl, 0xc000 + 80 * 5
+	ld de, 0xc000 + 80 * 5 + 1
+	ld bc, 256
+	ld (hl), 255
+	ldir
+	ret
 
+
+
+;;
+; A fake part that write random things on memory screen
 play_part
 	; todo register a gunction to leave properly
 
