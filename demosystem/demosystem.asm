@@ -75,34 +75,55 @@ demo_system_handle_command
 	; - init after firmware (interruption are cut, we don't care of ix/iy)
 	; - demo play (the current version)
 demo_system_private_launch_next_part
-	ld ix, data.table
+
+	; set up the limit counter
+.reset_limit_counter
+	ld hl, (rst1.frame_counter)
+	ld bc, NB_FRAMES_BEFORE_LEAVING
+	add hl, bc
+	ld (demo_system_check_if_must_leave.limit), hl
+	ld a, 1 : ld (demo_system_part_must_leave), a
+
+
+	; copy the next part in memory and launch the appropriate code
+.copy_next_part_in_memory
+	ld hl, data.table
 .table_pointer equ $-2
 .read_values
-	ld l, (ix + 0)
-	ld h, (ix + 1)
-	ld a, h : or l
+	ld e, (hl) : inc hl
+	ld d, (hl) : inc hl
+	ld a, d : or e
 	jr nz, .go_on
-	ld ix, data.table
+	ld hl, data.table
 	jr .read_values
 .go_on
 	
-	ld e, (ix + 4)
-	ld d, (ix + 5)
+	push de        ; Save address of the part in demo system
 
-	push de
+	ld e, (hl) : inc hl
+	ld d, (hl) : inc hl
+	push de  		; Save lenght of the uncrunched part
 
 
-	ld c, (ix + 2)
-	ld b, (ix + 3)
+	ld e, (hl) : inc hl
+	ld d, (hl) : inc hl ; get destination
 
+	ld (.table_pointer), hl   ; Backup the table
+
+
+	pop bc, hl 
 	; HL = Address of the part in C1 memory space
 	; BC = Number of bytes to copy
 	; DE = Address of the part in 0x100-0xbfff
+	push de  		; Save destination address
 	ldir
 
 	; compute the address of the demo
 	pop hl
-	inc hl : inc hl : inc hl : inc hl ; move at the appropriate location
+	ld de, 2*2 ; 0*2 => init with firmware
+	           ; 1*2 => init without firmware
+			   ; 2*2 => demo
+	add hl, de
 	ld e, (hl) : inc hl : ld d, (hl)
 
 	; setup properly the stack to finish the execution of the DS routines and call the demo
@@ -110,17 +131,7 @@ demo_system_private_launch_next_part
 	push de    	; store the demo address
 	push bc 	; restore the return of the call
 
-	; set up the limit counter
-	ld hl, (rst1.frame_counter)
-	ld bc, NB_FRAMES_BEFORE_LEAVING
-	add hl, bc
-	ld (demo_system_check_if_must_leave.limit), hl
-	ld a, 1 : ld (demo_system_part_must_leave), a
 
-	; update the pointer
-	ld de, 2 + 2 + 2
-	add ix, de
-	ld (.table_pointer), ix
 
 	ret ; continue the execution; the appropriate demo will be launched
 ;;

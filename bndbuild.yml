@@ -5,7 +5,7 @@
   dep: sna
   cmd: xfer 192.168.1.27 -y hello.sna
 
-- tgt: 40amd.dsk
+- tgt: 40_amd.dsk
   dep: linker.asm page0.o page1.o
   cmd: basm linker.asm  --lst 40.lst --sym 40.sym --override
 
@@ -27,4 +27,4 @@
 - tgt: distclean
   phony: true
   dep: clean
-  cmd: -rm test.sna
+  cmd: -rm test.sna *.dsk
