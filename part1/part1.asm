@@ -15,18 +15,23 @@
 ; Each part must start with these 3 jump blocks
 ; So systematically 6 bytes that compress badly are lost
 part1
-	dw demo_system_address_of_a_ret ; System has not been killed yet, it is then possible to use it to build/compute stuff
+	dw init_assets_with_firmware  ; System has not been killed yet, it is then possible to use it to build/compute stuff
 	               				 ; this is called one time just after deo launched
 	dw demo_system_address_of_a_ret ; Some other init may prfere a killed system.
 	                                ; it is better to lost 3 bytes rather than plenty more by saving firmware state
 	dw play_part ;
 
 ;;
-; No init are done there
-; We can still earn 1 byte by setting the adress at a location where we know there is a ret
+; First stage init.
 init_assets_with_firmware
-init_assets_without_firmware
-	ret
+	ld hl, .txt
+.loop
+		ld a, (hl) : inc hl
+		or a : ret z
+		call 0xbb5a
+		jr .loop
+.txt db "Frimware init of part 1", 0
+
 
 play_part
 	; todo register a gunction to leave properly

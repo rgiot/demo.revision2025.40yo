@@ -75,6 +75,27 @@ demo_system_handle_command
 	; - init after firmware (interruption are cut, we don't care of ix/iy)
 	; - demo play (the current version)
 demo_system_private_launch_next_part
+	call .reset_limit_counter
+	call .copy_next_part_in_memory
+	
+.launch_part
+		; compute the address of the demo
+	ld hl, (.part_loaded_at)
+	ld de, 2*2 ; 0*2 => init with firmware
+.launch_part_delta equ $-2
+	           ; 1*2 => init without firmware
+			   ; 2*2 => demo
+	add hl, de
+	ld e, (hl) : inc hl : ld d, (hl)
+
+	; setup properly the stack to finish the execution of the DS routines and call the demo
+	pop bc 		; remove the return of call demo_system_handle_command
+	push de    	; store the demo address
+	push bc 	; restore the return of the call
+
+
+
+	ret ; continue the execution; the appropriate demo will be launched
 
 	; set up the limit counter
 .reset_limit_counter
@@ -83,6 +104,7 @@ demo_system_private_launch_next_part
 	add hl, bc
 	ld (demo_system_check_if_must_leave.limit), hl
 	ld a, 1 : ld (demo_system_part_must_leave), a
+	ret
 
 
 	; copy the next part in memory and launch the appropriate code
@@ -115,25 +137,17 @@ demo_system_private_launch_next_part
 	; HL = Address of the part in C1 memory space
 	; BC = Number of bytes to copy
 	; DE = Address of the part in 0x100-0xbfff
-	push de  		; Save destination address
+	ld (.part_loaded_at), de  		; Save destination address
 	ldir
-
-	; compute the address of the demo
-	pop hl
-	ld de, 2*2 ; 0*2 => init with firmware
-	           ; 1*2 => init without firmware
-			   ; 2*2 => demo
-	add hl, de
-	ld e, (hl) : inc hl : ld d, (hl)
-
-	; setup properly the stack to finish the execution of the DS routines and call the demo
-	pop bc 		; remove the return of call demo_system_handle_command
-	push de    	; store the demo address
-	push bc 	; restore the return of the call
+	ret
 
 
 
-	ret ; continue the execution; the appropriate demo will be launched
+.part_loaded_at dw 0
+
+
+
+
 ;;
 ; Probably bet to do it after cutting the interruptions
 demo_system_private_init_player

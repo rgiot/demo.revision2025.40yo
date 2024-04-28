@@ -8,22 +8,6 @@
 	include once "demosystem/public_macros.asm"
 	include once "demosystem/private_macros.asm"
 
-	; Here include the small memory area that has to be used by the parts
-SELECTED_PAGE = 0
-	bankset SELECTED_PAGE
-
-	; Tiny bootstrap to launch the demo
-	org 0x1000
-	run $
-
-
-page0_start
-
-	include "demosystem/demosystem_init.asm"
-
-
-
-page0_length = $ - page0_start
 
 	; Here include the whole demosystem
 SELECTED_PAGE = 1
@@ -32,6 +16,18 @@ page1_start equ 0xc000
 	include "demosystem/demosystem.asm"
 page1_length = $ - page1_start
 
+
+
+	; Here include the small memory area that has to be used by the parts
+SELECTED_PAGE = 0
+	bankset SELECTED_PAGE
+
+	; Tiny bootstrap to launch the demo
+	org 0x8000
+	run $
+page0_start
+	include "demosystem/demosystem_init.asm"
+page0_length = $ - page0_start
 
 	print "PAGE0: ", {hex}page0_length, " bytes from ", {hex}page0_start
 	print "PAGE1: ", {hex}page1_length, " bytes from ", {hex}page1_start

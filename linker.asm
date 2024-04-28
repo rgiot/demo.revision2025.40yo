@@ -19,10 +19,10 @@ first_byte
 		;;
 		; Copy page 0 at the appropriate place
 		ld hl, 0xc000 + page0_start - crunched_data
-		ld de, 0x1000
+		ld de, 0x8000
 		ld bc, page0_length
 		ldir
-		
+		; TODO add an assertion to check that no system memory is destroyed there
 		;;
 		; Copy page 1 at the appropriate place
 		ld bc, 0x7fc7 : out (c), c
@@ -34,7 +34,7 @@ first_byte
 
 	ei 
 
-		jp 0x1000
+		jp 0x8000
 
 crunched_data
 	LZSHRINKLER

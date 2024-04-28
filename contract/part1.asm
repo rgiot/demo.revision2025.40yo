@@ -10,4 +10,5 @@
 ;;
 ; Loading area
 ; XXX no idea yet if we have to force it TODO need to discuss with the other about that
-PART1_LOADING_AREA equ 0x100
+; too low can be problematic as some code is executed while the firmware exists
+PART1_LOADING_AREA equ 0x1000

@@ -8,8 +8,38 @@
 	; firmware cannot be used anymore
 	assert $>=0x100
 
-	assert $ == 0x1000, "You need to modify linker.asm then"
-	
+	assert $ == 0x8000, "You need to modify linker.asm then"
+
+
+	; Launch the init of the parts
+	; XXX here it is quite problematic because we cannot use the demosystem to handle everything. So the code of the part on the code of the init must cohabit.
+	; No idea how to handle that properly 
+	;   - force parts to not use a specific place ?
+	;   - force firmware init code to be executed at a specific address ?
+	;In the current version we load the linker in 0x8000, so the part cannot use this area during this specific init
+
+
+	; we need to cut interruptions while copying the part data in memory
+	repeat PARTS_COUNT
+		; copy the part in memory and get its address
+		di
+			ld bc, 0x7f00 + 0xc1 : out (c), c
+			call demo_system_private_launch_next_part.copy_next_part_in_memory
+			ld hl, (demo_system_private_launch_next_part.part_loaded_at)
+			ld bc, 0x7f00 + 0xc0 : out (c), c
+		ei
+
+		; retreive the address of the firmware init stuff
+		; add 0 to hl
+		ld e, (hl) : inc hl : ld d, (hl)
+		ld (.address_to_call), de
+
+		; and call it
+		call 0xdead
+.address_to_call equ $-2
+
+	endr ; praise the cruncher
+
 	di
 		; set up stack
 		ld sp, 0x100
