@@ -7,6 +7,9 @@
 	; install the stack in 0x100 space and the jump blocs in 0x0000
 	; firmware cannot be used anymore
 	assert $>=0x100
+
+	assert $ == 0x1000, "You need to modify linker.asm then"
+	
 	di
 		; set up stack
 		ld sp, 0x100

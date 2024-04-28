@@ -5,7 +5,9 @@
   dep: sna
   cmd: xfer 192.168.1.27 -y hello.sna
 
-- tgt: 40
+- tgt: 40amd.dsk
+  dep: linker.asm page0.o page1.o
+  cmd: basm linker.asm  --lst 40.lst --sym 40.sym --override
 
 - tgt: test.sna page0.o page1.o
   dep: test.asm demosystem/*.asm music/*.* part1/part1.o

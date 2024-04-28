@@ -37,5 +37,8 @@ page1_length = $ - page1_start
 	print "PAGE1: ", {hex}page1_length, " bytes from ", {hex}page1_start
 
 
+	bankset 0
 	save "page0.o", page0_start, page0_length
+	
+	bankset 1
 	save "page1.o", page1_start, page1_length
