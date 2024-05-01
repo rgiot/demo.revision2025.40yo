@@ -23,3 +23,55 @@
 	macro __DS_RESTORE_USER_MEMORY_CONF__
 		jp rst1.restore
 	endm
+
+
+
+	;;
+	; Register a new part in the demosystem
+	macro __DS_ADD_PART__ fname, address
+		PARTS_COUNT += 1
+		PARTS_DATA = list_push(PARTS_DATA, [{fname}, {address}])
+
+	endm
+
+
+
+	macro __DS__GENERATE_PARTS_DATA__
+
+
+
+		; Manually add the parts here. As we copy them in memory each time, we can launch them several times
+		print "====== PARTS ======"
+		; Automatically create the information to launch them
+data_table
+		repeat PARTS_COUNT, part_nb ; XXX first loop starts with part_nb = 1 as with rasm XXX I am not sure to keep this beahavior in basm
+			dw part{{part_nb}}_before_binary		; Address of the part
+			dw part{{part_nb}}_binary_length		; Length of the part
+			dw part{{part_nb}}_destination			; destination of the part
+		endr
+		dw 0
+
+data_parts
+		repeat PARTS_COUNT, part_nb ; XXX first loop starts with part_nb = 1 as with rasm XXX I am not sure to keep this beahavior in basm
+
+CURRENT_PART_DATA = list_get(PARTS_DATA, {part_nb}-1)
+CURRENT_PART_FNAME = list_get(CURRENT_PART_DATA, 0)
+CURRENT_PART_ADDRESS = list_get(CURRENT_PART_DATA, 1)
+
+part{{part_nb}}_destination = CURRENT_PART_ADDRESS
+part{{part_nb}}_before_binary = $
+		db load(CURRENT_PART_FNAME)
+part{{part_nb}}_after_binary = $ 
+part{{part_nb}}_binary_length = part{{part_nb}}_after_binary - part{{part_nb}}_before_binary
+
+
+
+		print "Add part ", {part_nb}, ": ", \
+			{hex}part{{part_nb}}_before_binary, \
+			":", \
+			{hex}(part{{part_nb}}_after_binary-1)
+
+
+		endr
+
+	endm

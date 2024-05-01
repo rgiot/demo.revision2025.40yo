@@ -21,28 +21,6 @@
 	include once "contract/part1.asm"
 
 
-; Counter of number of parts. Is updated automatically
-PARTS_COUNT = 0
-
-	;;
-	; Add a part in the demosystem
-	; 1. create the appropriate labels
-	; 2. include the binary file
-	macro ADD_PART fname, address
-		PARTS_COUNT += 1
-
-part{PARTS_COUNT}_destination = {address}
-part{PARTS_COUNT}_before_binary = $
-		incbin {fname}
-part{PARTS_COUNT}_after_binary = $ 
-part{PARTS_COUNT}_binary_length = part{PARTS_COUNT}_after_binary - part{PARTS_COUNT}_before_binary
-
-
-		print "Add part ", PARTS_COUNT, ": ", \
-			{hex}part{PARTS_COUNT}_before_binary, \
-			":", \
-			{hex}(part{PARTS_COUNT}_after_binary-1)
-	endm
 
 	
 	org 0xc000
@@ -109,14 +87,14 @@ demo_system_private_launch_next_part
 
 	; copy the next part in memory and launch the appropriate code
 .copy_next_part_in_memory
-	ld hl, data.table
+	ld hl, data_table
 .table_pointer equ $-2
 .read_values
 	ld e, (hl) : inc hl
 	ld d, (hl) : inc hl
 	ld a, d : or e
 	jr nz, .go_on
-	ld hl, data.table
+	ld hl, data_table
 	jr .read_values
 .go_on
 	
@@ -204,7 +182,7 @@ demo_system_private_stop_music_under_interruption
 
 
 
-	print "====== MUSIC ======"
+	print "====== MUSIC ====== (move at last position if content >16kb)"
  
 
 	include "demosystem/music.asm"
@@ -213,20 +191,14 @@ demo_system_private_stop_music_under_interruption
 
 
 
-data
+	; TODO rewrite the macro to setup the table first
 
-	; Manually add the parts here. As we copy them in memory each time, we can launch them several times
-.parts
-	print "====== PARTS ======"
 
-	ADD_PART "part1/part1.o", PART1_LOADING_AREA
+	; Counter of number of parts. Is updated automatically
+PARTS_COUNT = 0
+PARTS_DATA  = []
+
+	__DS_ADD_PART__ "part1/part1.o", PART1_LOADING_AREA
 ;	ADD_PART "part2/fake.bin", 0x2000
 
-	; Automatically create the information to launch them
-.table
-	repeat PARTS_COUNT, part_nb ; XXX first loop starts with part_nb = 1 as with rasm XXX I am not sure to keep this beahavior in basm
-		dw part{{part_nb}}_before_binary		; Address of the part
-		dw part{{part_nb}}_binary_length		; Length of the part
-		dw part{{part_nb}}_destination			; destination of the part
-	endr
-	dw 0
+ 	__DS__GENERATE_PARTS_DATA__ (void)
