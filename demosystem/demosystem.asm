@@ -202,6 +202,17 @@ demo_system_private_stop_music_under_interruption
 
 
 
+
+
+	print "====== MUSIC ======"
+ 
+
+	include "demosystem/music.asm"
+
+	print "Demosystem stops at ", {hex4}$
+
+
+
 data
 
 	; Manually add the parts here. As we copy them in memory each time, we can launch them several times
@@ -219,11 +230,3 @@ data
 		dw part{{part_nb}}_destination			; destination of the part
 	endr
 	dw 0
-
-
-	print "====== MUSIC ======"
- 
-
-	include "demosystem/music.asm"
-
-	print "Demosystem stops at ", {hex4}$

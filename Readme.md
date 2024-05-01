@@ -13,11 +13,11 @@
  - For the sake of memory efficiency, there is no CRTC detection routine. So each part that needs CRTC adaptation have to be assembled for all crtc. Each version must shrinks <= 512 bytes. There will be one executable per CRTC
  - each part must work on CRTC 0/1/4. This is good if it works on crtc 3 and marvelous on crtc 2. The best is to be able to play the demo on any machine with 128kb
  - If you play with 0x38... area, backup and restore it
+ - As some init are done during the system, the part cannot be installed in areas incompatible with firmware use. However, after init phase, they can use almost all main memory
 
+# Workflow currently implemented
 
-# Workflow 
-
-1. User types: RUN"40ymd (or whatever will be chosen at this time) to load and start the demo
+1. User types: RUN"40.amd (or whatever will be chosen at this time) to load and start the demo
 
 2. Bootstrap uncrunches the whole binary in whole bank 0xc7. Finger crossed it will not be bigger
 3. Bootstrap makes some init for demo system using firmware (common curves ? chars retrieval ? XXX need to be defined)
@@ -46,3 +46,5 @@
 	  7.a.4.b Part p checks if it has to leave
 	  7.a.4.c If it times, part p does its cleaning and request a part change
    7.a.5 if needed (but for ALL parts) demo system  copies p in demosystem memory
+
+
