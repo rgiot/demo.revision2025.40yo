@@ -24,7 +24,7 @@
 
 	
 	org 0xc000
-
+demo_system_first_byte
 ;;
 ; RST 4 has been used to send a command (whose value is multiplied by two) in register E
 demo_system_handle_command
@@ -178,7 +178,7 @@ demo_system_private_stop_music_under_interruption
 
 
 
-
+demosystem_code_only_length = $-demo_system_first_byte
 
 
 
