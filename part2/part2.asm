@@ -45,7 +45,7 @@ init_assets_with_firmware
 	inc hl
 	call 0xbb5a
 	jr .loop
-.msg db 10, "Part 2 uses system and write 0xbeef in its dedicatd space during init 1, then 0xbeef in init 2. The effect continuously change these values one time per call. Music is manually played and its duration is shown. Persistent memory is used to cont the number of runs and select the palette", 0
+.msg db 10, "Part 2 uses system and write 0xdead in its dedicatd space during init 1, then 0xbeef in init 2. The effect continuously changes these values one time per call. Music is manually played and its duration is shown. Persistent memory is used to count the number of runs and select the palette", 0
 
 ;;
 ; This init is done when firmware is not used

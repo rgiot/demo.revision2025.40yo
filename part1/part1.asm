@@ -32,7 +32,7 @@ init_assets_with_firmware
 		or a : ret z
 		call 0xbb5a
 		jr .loop
-.txt db 12, 10, 10, 10, 10, 10, 10, 10, 10, 10, "Part 1 use firmware in first init stage. And clear some screen area in second stage. It's effect only consists in writting random bytes in the first 256 bytes of screen. Music is played under interruption."
+.txt db 12, 10, 10, 10, 10, 10, 10, 10, 10, 10, "Part 1 uses firmware in first init stage, then clears some screen area in second stage. It's effect only consists in writting random bytes in the first 256 bytes of screen. Music is played under interruption by the system."
    db 10, 13
 	db 0
 
