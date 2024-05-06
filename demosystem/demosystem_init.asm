@@ -30,11 +30,11 @@
 		; retreive the address of the firmware init stuff
 		; add 0 to hl
 		ld e, (hl) : inc hl : ld d, (hl)
-		ld (.address_to_call), de
+		ld (@address_to_call), de
 
 		; and call it
 		call 0xdead
-.address_to_call equ $-2
+@address_to_call equ $-2
 	endr ; praise the cruncher
 
 	di
@@ -63,11 +63,11 @@
 		; retreive the address of the firmware init stuff
 		ld de, 2*1 : add hl, de
 		ld e, (hl) : inc hl : ld d, (hl)
-		ld (.address_to_call2), de
+		ld (@address_to_call2), de
 
 		; and call it
 		call 0xdead
-.address_to_call2 equ $-2
+@address_to_call2 equ $-2
 	endr ; praise the cruncher
 
 

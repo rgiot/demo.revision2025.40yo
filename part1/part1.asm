@@ -6,8 +6,8 @@
 ; I'm pretty sure my files are rasm compatible
 
 
-	include "contract/part1.asm"
 	include "demosystem/public_macros.asm"
+	include "contract/part1.asm"
 
 	org PART1_LOADING_AREA
 
@@ -32,9 +32,11 @@ init_assets_with_firmware
 		or a : ret z
 		call 0xbb5a
 		jr .loop
-.txt db 10, 10, 10, 10, 10, 10, 10, 10, 10, "Part 1 use firmware in first init stage. And clear some screen area in second stage. It's effect only consists in writting random bytes in the first 256 bytes of screen", 0
+.txt db 10, 10, 10, 10, 10, 10, 10, 10, 10, "Part 1 use firmware in first init stage. And clear some screen area in second stage. It's effect only consists in writting random bytes in the first 256 bytes of screen. Music is played under interruption."
+   db 10, 13
+	db 0
 
-;;
+;; 
 ; Second stage init.
 ; Clear some bytes on screen
 init_assets_without_firmware
@@ -63,6 +65,8 @@ play_part
 		inc l
 	djnz .code_loop
 
+	; Only a limit amount of  frames is allowed (init included)
+	; so we loop only if the system gives the authorization
 	DS_CHECK_IF_MUST_LEAVE (void)
 	jp nz, .frame_loop
 

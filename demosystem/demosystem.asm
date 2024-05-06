@@ -18,7 +18,6 @@
 	assert SELECTED_PAGE == 1
 
 	include once "demosystem/config.asm"
-	include once "contract/part1.asm"
 
 
 
@@ -183,22 +182,10 @@ demosystem_code_only_length = $-demo_system_first_byte
 
 
 	print "====== MUSIC ====== (move at last position if content >16kb)"
- 
-
 	include "demosystem/music.asm"
 
+	print "====== PARTS ====== (move before music if content >16kb)"
+	include "demosystem/parts.asm"
+
+
 	print "Demosystem stops at ", {hex4}$
-
-
-
-	; TODO rewrite the macro to setup the table first
-
-
-	; Counter of number of parts. Is updated automatically
-PARTS_COUNT = 0
-PARTS_DATA  = []
-
-	__DS_ADD_PART__ "part1/part1.o", PART1_LOADING_AREA
-;	ADD_PART "part2/fake.bin", 0x2000
-
- 	__DS__GENERATE_PARTS_DATA__ (void)
