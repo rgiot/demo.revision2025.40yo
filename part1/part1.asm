@@ -78,16 +78,19 @@ play_part
 	ld (hl), l
 	ldir
 
+	if 0
 
-	; lost lots of time to see the screen cleanup
-	ld b, 50*3
-.slow_down
-		push bc
-			DS_WAIT_VSYNC (void)
-			halt
-			halt
-		pop bc
-	djnz .slow_down
-
+		; lost lots of time to see the screen cleanup
+		ld b, 50*3
+	.slow_down
+			push bc
+				DS_WAIT_VSYNC (void)
+				halt
+				halt
+			pop bc
+		djnz .slow_down
+	endif
+	
+	
 	; music is already under interruption, so there is no need to activate it again
 	DS_LAUNCH_NEXT_PART (void)
