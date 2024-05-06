@@ -32,7 +32,7 @@ init_assets_with_firmware
 		or a : ret z
 		call 0xbb5a
 		jr .loop
-.txt db 10, 10, 10, 10, 10, 10, 10, 10, 10, "Part 1 use firmware in first init stage. And clear some screen area in second stage. It's effect only consists in writting random bytes in the first 256 bytes of screen. Music is played under interruption."
+.txt db 12, 10, 10, 10, 10, 10, 10, 10, 10, 10, "Part 1 use firmware in first init stage. And clear some screen area in second stage. It's effect only consists in writting random bytes in the first 256 bytes of screen. Music is played under interruption."
    db 10, 13
 	db 0
 
@@ -91,6 +91,6 @@ play_part
 		djnz .slow_down
 	endif
 	
-	
+
 	; music is already under interruption, so there is no need to activate it again
 	DS_LAUNCH_NEXT_PART (void)
