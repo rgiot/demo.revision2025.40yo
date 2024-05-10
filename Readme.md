@@ -72,3 +72,14 @@ Just get ride of the macros and manually write the corresponding code if needed.
 Of  course I can help to convert `basm` macros and test programs  to your own assembler.
 
 If you need persistent memory, request it, I'll reserve a slot and provide the appropriate configuration file.
+
+
+
+# Participants
+
+- Symbiosis: BSC
+- Arkos: Targhan
+- Benediction: Eliot
+- Vanity: Hicks 
+- Slot5 free
+- Slot6 free
