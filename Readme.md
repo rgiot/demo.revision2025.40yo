@@ -77,9 +77,17 @@ If you need persistent memory, request it, I'll reserve a slot and provide the a
 
 # Participants
 
+## Part
+
 - Symbiosis: BSC
 - Arkos: Targhan
 - Benediction: Eliot
 - Vanity: Hicks 
 - Slot5 free
 - Slot6 free
+
+## Demosystem
+
+ - Benediction: Krusty (demosystem)
+ - Overlanders: Madram (player)
+ - Arkos: Targhan (music)
