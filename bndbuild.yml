@@ -9,7 +9,7 @@
   dep: linker.asm page0.o page1.o
   cmd: basm linker.asm  --lst 40.lst --sym 40.sym --override
 
-- tgt: test.sna page0.o page1.o page1_without_music_and_parts.o
+- tgt: test.sna page0.o page1.o page1_without_music_and_parts.o page1_without_parts.o
   dep: test.asm demosystem/*.asm music/*.* part1/part1.o part2/part2.o
   cmd: basm test.asm --sna -o test.sna --lst test.lst --sym test.sym
 

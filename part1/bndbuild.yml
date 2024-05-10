@@ -1,3 +1,15 @@
 - tgt: part1.o
-  dep: part1.asm ../contract/part1.asm ../demosystem/public_macros.asm
+  dep: part1.asm ../contract/part1.asm ../kit/public_macros.asm
   cmd: basm part1.asm -o part1.o -I ..
+
+
+
+# Because of the use of firmware code, we have to generate a DSK and not a SNA
+# Need to fix that later
+- tgt: test_part1.dsk TEST1.BIN
+  dep: part1.o ../kit/page0.o ../kit/page1_without_parts.o
+  cmd: basm test_part1.asm --override
+
+- tgt: m4
+  dep: TEST1.BIN
+  cmd: xfer 192.168.1.26 -y TEST1.BIN

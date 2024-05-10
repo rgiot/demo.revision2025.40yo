@@ -1,3 +1,12 @@
 - tgt: part2.o
   dep: part2.asm ../contract/part2.asm ../demosystem/public_macros.asm
   cmd: basm part2.asm -o part2.o -I ..
+
+
+- tgt: test_part2.dsk TEST2.BIN
+  dep: part2.o ../kit/page0.o ../kit/page1_without_parts.o
+  cmd: basm test_part2.asm --override
+
+- tgt: m4
+  dep: TEST2.BIN
+  cmd: xfer 192.168.1.26 -y TEST2.BIN

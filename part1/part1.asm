@@ -6,7 +6,7 @@
 ; I'm pretty sure my files are rasm compatible
 
 
-	include "demosystem/public_macros.asm"
+	include "kit/public_macros.asm"
 	include "contract/part1.asm"
 
 	org PART1_LOADING_AREA

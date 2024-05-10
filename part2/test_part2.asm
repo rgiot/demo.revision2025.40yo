@@ -1,6 +1,6 @@
 
 	include "../kit/public_macros.asm" ; Only serves to obtain a value for DS_DEFAULT_LOADING_AREA
-	include "../contract/part1.asm"
+	include "../contract/part2.asm"
 
 	;;
 	; Linker for a single part.
@@ -48,10 +48,10 @@ page1_parts_table
 		; Add the missing table to properly lunch the part
 		dw part_location_in_demosystem_space ; The address of the part in the demoysystem space
 		dw part_length
-		dw PART1_LOADING_AREA ; installation address of the part
+		dw PART2_LOADING_AREA ; installation address of the part
 		dw 0 ; end of table
 page1_part_location
-		incbin "part1.o"
+		incbin "part2.o"
 
 part_length equ $-page1_part_location
 part_location_in_demosystem_space equ 0xc000 + page1_without_parts_length  + 2 + 2 + 2 + 2
@@ -62,8 +62,8 @@ page1_length equ $-page1_start
 
 binary_length equ $-first_byte
 
-	save "TEST1.BIN", first_byte, binary_length, AMSDOS
-	save "TEST1.BIN", first_byte, binary_length, DSK, "test_part1.dsk"
+	save "TEST2.BIN", first_byte, binary_length, AMSDOS
+	save "TEST2.BIN", first_byte, binary_length, DSK, "test_part2.dsk"
 
 
 

@@ -1,4 +1,15 @@
+# 40 Years Amstrad CPC Mini Demo
+
+
+This is the public repository of the 40 Years Amstrad CPC Mini Demo to be released at Revision 2025.
+It only serves to publicly export the demosystem, and the programming kit to allow participants to work on their part.
+The repository will never contain the parts of the participants nor the final demo (at least until it as been finally released).
+
+
 # Rules
+
+
+**Rules are not yet set up and will fore sure evolve. I'm mainly expecting feedback**. For example I have a concern about the 512 bytes limitation that is probably too huuge in view of the demosystem & player size.
 
  - 512 per group max after shrinkler when crunching the part alone. We expect then a better compression when mixed with all other parts. Extra bytes are for the demo system ;)
  - Possibility to offer extra space to another group
@@ -48,3 +59,16 @@
    7.a.5 if needed (but for ALL parts) demo system  copies p in demosystem memory
 
 
+# How to code a part for this project ?
+
+Folders `part1`  and `part2` illustrate how to:
+- code a part that use some demosystem facilities and mandatory routines
+- build an executable to test the part
+
+Folder `kit` contains the minimum files needed to work on a part (i.e. the prebuilt demosystem and some macros).
+
+I have made the test with my own `basm` assembler BUT you can use any native or crossdev assembler to work on your part.
+Just get ride of the macros and manually write the corresponding code if needed.
+Of  course I can help to convert `basm` macros and test programs  to your own assembler.
+
+If you need persistent memory, request it, I'll reserve a slot and provide the appropriate configuration file.

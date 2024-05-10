@@ -39,3 +39,4 @@ page0_length = $ - page0_start
 	bankset 1
 	save "page1.o", page1_start, page1_length
 	save "page1_without_music_and_parts.o", page1_start, demosystem_code_only_length
+	save "page1_without_parts.o", page1_start, demosystem_code_and_music_length

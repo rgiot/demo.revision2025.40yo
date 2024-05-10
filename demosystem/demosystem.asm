@@ -184,6 +184,8 @@ demosystem_code_only_length = $-demo_system_first_byte
 	print "====== MUSIC ====== (move at last position if content >16kb)"
 	include "demosystem/music.asm"
 
+demosystem_code_and_music_length = $-demo_system_first_byte
+
 	print "====== PARTS ====== (move before music if content >16kb)"
 	include "demosystem/parts.asm"
 
