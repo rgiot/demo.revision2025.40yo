@@ -1,4 +1,12 @@
 ;;
+; 40 Years Amstrad CPC Mini Demo
+; Krusty/Benediction
+; April 2024
+
+
+
+
+;;
 ; RST routines that can be called by the parts
 ;
 ; - RST 0 / DS_WAIT_VSYNC (void) / demo_system_wait_vsync => wait vsync

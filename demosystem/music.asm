@@ -1,3 +1,9 @@
+;;
+; 40 Years Amstrad CPC Mini Demo
+; Krusty/Benediction
+; April 2024
+	
+	
 	switch SELECTED_MUSIC_PLAYER
 		case MUSIC_PLAYER_AKM
 

@@ -1,4 +1,10 @@
 ;;
+; 40 Years Amstrad CPC Mini Demo
+; Krusty/Benediction
+; April, May 2024
+
+
+;;
 ; The demo system AS WELL as the UNCRUNCHED part
 ; will stick in one bank (at list I hope as it seem to be often the case).
 ; If not, we'll see how to fix that.

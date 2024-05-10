@@ -1,3 +1,10 @@
+	;;
+; 40 Years Amstrad CPC Mini Demo
+; Krusty/Benediction
+; April, May 2024
+
+	
+	
 	assert SELECTED_PAGE == 0
 
 	; TODO do the init related to the firmware code called by each part

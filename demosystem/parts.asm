@@ -1,4 +1,9 @@
+;;
+; 40 Years Amstrad CPC Mini Demo
+; Krusty/Benediction
+; May 2024
 
+	
 	include once "contract/part1.asm"
 	include once "contract/part2.asm"
 	

@@ -1,3 +1,9 @@
+;;
+; 40 Years Amstrad CPC Mini Demo
+; Krusty/Benediction
+; April, May 2024
+
+
 DS_DEFAULT_LOADING_AREA equ 0x1000
 
 DS_FRAME_COUNTER_ADDRESS equ 0x0008+1

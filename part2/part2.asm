@@ -1,4 +1,10 @@
 ;;
+; 40 Years Amstrad CPC Mini Demo
+; Krusty/Benediction
+; April, May 2024
+
+
+;;
 ; Example of part that 
 ; - does some inits
 ; - manually plays the music

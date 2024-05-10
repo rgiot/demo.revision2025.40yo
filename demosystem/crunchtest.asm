@@ -1,3 +1,10 @@
+;;
+; 40 Years Amstrad CPC Mini Demo
+; Krusty/Benediction
+; April, May 2024
+
+
+
 ;max_available = 512
 
 

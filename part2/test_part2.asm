@@ -1,4 +1,11 @@
 
+;;
+; 40 Years Amstrad CPC Mini Demo
+; Krusty/Benediction
+; May 2024
+	
+	
+	
 	include "../kit/public_macros.asm" ; Only serves to obtain a value for DS_DEFAULT_LOADING_AREA
 	include "../contract/part2.asm"
 

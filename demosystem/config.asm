@@ -1,3 +1,9 @@
+;;
+; 40 Years Amstrad CPC Mini Demo
+; Krusty/Benediction
+; April, May 2024
+
+
 ;; 
 ; The maximum number of frames allocated to a demo
 ; Duration and unit subject to change

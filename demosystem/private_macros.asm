@@ -1,3 +1,8 @@
+;;
+; 40 Years Amstrad CPC Mini Demo
+; Krusty/Benediction
+; April, May 2024
+
 
 	;;
 	; set bank 3 of page 1 at memory 0xc0000. The rest is untouched
