@@ -89,5 +89,5 @@ If you need persistent memory, request it, I'll reserve a slot and provide the a
 ## Demosystem
 
  - Benediction: Krusty (demosystem)
- - Overlanders: Madram (player)
+ - Vanity: Madram (player)
  - Arkos: Targhan (music)
