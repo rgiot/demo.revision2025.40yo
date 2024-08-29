@@ -1,9 +1,12 @@
 
 ; to get square roots music : bndbuild disc Square\ Roots\ CHP.DSK get CHIP-SQR.BIN
-; to build sna : basm chipnsfx_test.asm  --sna -o  chipnsfx.sna && AceDL chipnsfx.sna
+; to build sna : bndbuild basm chipnsfx_test.asm  --sna -o  chipnsfx.sna --override --lst chipnsfx_test.lst && AceDL chipnsfx.sna 
 
-	org 0x1000
+	org 0x4000
 	run $
+
+
+first_byte
 
 
 
@@ -15,8 +18,8 @@
 
 	ld bc, 0xbc00  + 1 : out (c), c
 	ld bc, 0xbd00  + 0 : out (c), c
-	; song prebuilt/ no need to init
 
+	; song prebuilt/ no need to init
 	;ld hl, song_header
 	;call chip_song
 
@@ -46,41 +49,37 @@ wait defs 60
 	jp loop
 
 
-writepsg ; A=BYTE,C=REG.; -
- push bc
- ld b,$F4
- out (c),c
- ld bc,$F6C0;SELECT
- out (c),c
- dw $71ED;CPC PLUS!
- ld b,$F4
- out (c),a
- ld bc,$F680;UPDATE
- out (c),c
- dw $71ED;CPC PLUS!
- pop bc
- ret
 
-; song-only and prebuilt  chipnsfx_bss
-CHIPNSFX_FLAG = 0 + 4 + 256
+
+
+writepsg ; A=BYTE,C=REG.; -
+	push bc
+	ld b,$F4
+	out (c),c
+	ld bc,$F6C0;SELECT
+	out (c),c
+	dw $71ED;CPC PLUS!
+	ld b,$F4
+	out (c),a
+	ld bc,$F680;UPDATE
+	out (c),c
+	dw $71ED;CPC PLUS!
+	pop bc
+	ret
+
+CHIPNSFX_FLAG = 0 + 4 + 256 + 512
 chipnsfx
 	include "music/chipnsfx.z80"
 music
-	if 1
-		include "music/WARHAWK.asm"
-	chip_song_a = song_a
-	chip_song_b = song_b
-	chip_song_c = song_c
-	else
-		incbin "music/CHIP-SQR.BIN" ; header is automatically removed
-	chip_song_a = music + 0x00
-	chip_song_b = music + 0xbb
-	chip_song_c = music + 0x16b
-
-	;song_header:
-	;	DEFW chip_song_a-$-2
-	;	DEFW chip_song_b-$-2
-	;	DEFW chip_song_c-$-2
-	endif
+	include "music/4k08_final_tj.asm"
+chip_song_a = song_a
+chip_song_b = song_b
+chip_song_c = song_c
 
 	print "CHIPNSFX_TOTAL=", CHIPNSFX_TOTAL
+
+length = $-first_byte 
+
+	save "SQR.BIN", first_byte, length, DSK, "SQR.DSK"
+	save "SQR.BIN", first_byte, length, AMSDOS
+	SAVE "ZICPLY.BIN", writepsg, $-writepsg

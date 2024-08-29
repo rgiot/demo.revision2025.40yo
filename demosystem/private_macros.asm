@@ -33,9 +33,9 @@
 
 	;;
 	; Register a new part in the demosystem
-	macro __DS_ADD_PART__ fname, address
+	macro __DS_ADD_PART__ fname, address, orgams
 		PARTS_COUNT += 1
-		PARTS_DATA = list_push(PARTS_DATA, [{fname}, {address}])
+		PARTS_DATA = list_push(PARTS_DATA, [{fname}, {address}, {orgams}])
 
 	endm
 
@@ -62,10 +62,17 @@ data_parts
 CURRENT_PART_DATA = list_get(PARTS_DATA, {part_nb}-1)
 CURRENT_PART_FNAME = list_get(CURRENT_PART_DATA, 0)
 CURRENT_PART_ADDRESS = list_get(CURRENT_PART_DATA, 1)
+CURRENT_PART_IS_ORGAMS = list_get(CURRENT_PART_DATA, 2)
 
 part{{part_nb}}_destination = CURRENT_PART_ADDRESS
 part{{part_nb}}_before_binary = $
-		db load(CURRENT_PART_FNAME)
+CURRENT_PART_CONTENT = load(CURRENT_PART_FNAME)
+	if CURRENT_PART_IS_ORGAMS
+		CURRENT_LEN = list_len(CURRENT_PART_CONTENT)
+		CURRENT_PART_CONTENT = list_sublist(CURRENT_PART_CONTENT, 128, CURRENT_LEN) ; Remove header that is not properly encoded
+	endif
+	db CURRENT_PART_CONTENT
+
 part{{part_nb}}_after_binary = $ 
 part{{part_nb}}_binary_length = part{{part_nb}}_after_binary - part{{part_nb}}_before_binary
 

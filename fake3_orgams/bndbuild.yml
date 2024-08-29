@@ -1,0 +1,78 @@
+##
+# This is the version of fake2 that targets orgams assembler.
+# Source code is edited in ascii on PC, then converted to orgams format and assembled
+
+{% include "../common.bndbuild" %}
+
+{% macro generate_orgams_conversion(src, dst) %}
+# Convert {{src}} to ASCII orgams format
+- tgt: albireo/{{dst}}
+  dep: {{src}} ../contract/fake3.asm {{KIT_FILES | join(" ")}}
+  cmd: orgams -b --from . --src {{src}} --dst albireo/{{dst}}
+{% endmacro %}
+
+{% macro generate_orgams_assembling(src, dst, dep=None) %}
+# Assemble {{src}} from ASCII orgams format
+- tgt: albireo/{{dst | replace(".ASM", ".BIN")}}
+  dep: albireo/{{dst}}  {{dep | join(" ")}}
+  cmd: orgams --from albireo --src {{dst}} --dst {{dst | replace(".ASM", ".BIN")}}
+{% endmacro %}
+
+{% macro generate_orgams_taks(src, dst, dep=None) %}
+{{generate_orgams_conversion(src, dst)}}
+{{generate_orgams_assembling(src, dst, dep)}}
+{% endmacro %}
+
+
+- tgt: albireo/PAGE0.BIN albireo/PAGE1.BIN
+  dep: {{KIT_FILES | join(" ")}}
+  cmd:
+    - hideur ../kit/page1_without_parts.o -o albireo/PAGE1.BIN -t BINARY --load &0000
+    - hideur ../kit/page0.o -o albireo/PAGE0.BIN -t BINARY --load &0000
+
+##
+# Generate the rules necessary to build orgams projects
+{{generate_orgams_taks("fake3.asm",  "EFFECT.ASM")}}
+{{generate_orgams_taks("test_fake3_orgams.asm",  "TEST.ASM", dep=["albireo/EFFECT.BIN", "albireo/PAGE0.BIN", "albireo/PAGE1.BIN" ])}}
+
+- tgt: albireo/FAKE3.BIN
+  dep: albireo/TEST.BIN
+  cmd: cp albireo/TEST.BIN albireo/FAKE3.BIN #hideur albireo/TEST.BIN -o albireo/FAKE3.BIN -t binary --load &2000
+
+##
+# open the emu to manually digg with the files for debugging purposes
+- tgt: emu
+  phony: true
+  cmd: emu --albireo albireo/ run
+
+- tgt: basm_fake3.dsk fake3.rasm FAKE3.BIN
+  dep: albireo/EFFECT.BIN albireo/PAGE0.BIN albireo/PAGE1.BIN test_fake3_basm.asm 
+  cmd: basm test_fake3_basm.asm --override --ace fake3.rasm
+
+- tgt: fake3.dsk
+  dep: albireo/FAKE3.BIN
+  cmd: 
+   - disc fake3.dsk format -f data42
+   - impdsk -dsk fake3.dsk -put  albireo/FAKE3.BIN
+
+
+- tgt: test
+  dep: test_fake3.dsk fake3.rasm
+  phony: true
+  cmd: ace test_fake3.dsk fake3.rasm
+
+- tgt: m4
+  dep: albireo/FAKE3.BIN
+  cmd: xfer 192.168.1.26 -y albireo/FAKE3.BIN
+
+
+- tgt: clean
+  phony: true
+  cmd: -rm *.o albireo/* fake3.rasm 
+
+
+- tgt: distclean
+  dep: clean
+  phony: true
+  cmd: -rm TEST2.BIN test_fake3.dsk
+

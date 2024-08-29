@@ -2,7 +2,10 @@
 ; 40 Years Amstrad CPC Mini Demo
 ; Krusty/Benediction
 ; April, May 2024
+; August 2024: minor rewrite to ease orgams conversion
 
+
+ORGAMS_TEST=0
 
 DS_DEFAULT_LOADING_AREA equ 0x1000
 
@@ -64,12 +67,12 @@ demo_system_selected_crtc equ 0x37
 	; Install the player under interruption
 	; Modified: everything
 	macro DS_INSTALL_INTERRUPTED_MUSIC
-		DS_LAUNCH_COMMAND DS_COMMAND_INSTALL_INTERRUPTED_MUSIC
+		DS_LAUNCH_COMMAND(DS_COMMAND_INSTALL_INTERRUPTED_MUSIC)
 	endm
 
 
 	macro DS_STOP_INTERRUPTED_MUSIC
-		DS_LAUNCH_COMMAND DS_COMMAND_STOP_INTERRUPTED_MUSIC
+		DS_LAUNCH_COMMAND(DS_COMMAND_STOP_INTERRUPTED_MUSIC)
 	endm
 
 	;;
@@ -102,7 +105,23 @@ demo_system_selected_crtc equ 0x37
 
 	;;
 	; Modifed: A, B
-	macro DS_SELECT_BANK bank
-		ld a, {bank}
+	macro DS_SELECT_BANK gabank
+		ld A, {gabank}
 		DS_SELECT_BANK_FROM_A (void)
 	endm
+
+
+	;;
+	; Check, with orgams if there are error while assembling
+	; If there is no failure there is still no gurantee that the generate code is ok...
+	if ORGAMS_TEST
+	  DS_SELECT_BANK(&c4)
+	  DS_GET_FRAME_COUNTER_IN_HL()
+	  DS_LAUNCH_NEXT_PART()
+	  DS_STOP_INTERRUPTED_MUSIC()
+	  DS_INSTALL_INTERRUPTED_MUSIC()
+	  DS_PLAY_MUSIC()
+	  DS_WAIT_VSYNC()
+	  DS_CHECK_IF_MUST_LEAVE()
+	  DS_GET_FORCED_CRTC()
+	endif

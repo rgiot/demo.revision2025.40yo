@@ -1,0 +1,1 @@
+{% set KIT_FILES=["../kit/page0.o", "../kit/page1_without_parts.o", "../kit/public_macros.asm"] %}

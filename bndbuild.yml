@@ -1,23 +1,28 @@
-- tgt: sna
-  dep: test.sna
-
-- tgt: m4
-  dep: sna
-  cmd: xfer 192.168.1.27 -y hello.sna
-
 - tgt: 40_amd.dsk
   dep: linker.asm page0.o page1.o
   cmd: basm linker.asm  --lst 40.lst --sym 40.sym --override
 
 - tgt: test.sna page0.o page1.o page1_without_music_and_parts.o page1_without_parts.o
-  dep: test.asm demosystem/*.asm music/*.* part1/part1.o part2/part2.o
+  dep: test.asm demosystem/*.asm music/*.* part1/part1.o part2/part2.o fake3_orgams/albireo/EFFECT.BIN
   cmd: basm test.asm --sna -o test.sna --lst test.lst --sym test.sym
 
+
+- tgt: part1/part1.o
+  phony: true
+  cmd: bndbuild -f part1 part1.o
+
+- tgt: part2/part2.o
+  phony: true
+  cmd: bndbuild -f part2 part2.o
+
+
+- tgt: fake3_orgams/albireo/EFFECT.BIN
+  phony: true
+  cmd: bndbuild -f fake3_orgams albireo/EFFECT.BIN
 
 - tgt: crunchtest
   dep: demosystem/crunchtest.asm part1/part1.o page1_without_music_and_parts.o
   cmd: basm demosystem/crunchtest.asm
-
 
 
 - tgt: clean
@@ -28,3 +33,8 @@
   phony: true
   dep: clean
   cmd: -rm test.sna *.dsk
+
+- tgt: ace
+  dep: 40_amd.dsk
+  phony: true
+  cmd: emu --clear-cache --drivea  40_amd.dsk -r "40.AMD" run
